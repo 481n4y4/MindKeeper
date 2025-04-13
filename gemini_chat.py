@@ -1,8 +1,8 @@
 import requests
 import streamlit as st
 
-API_KEY = st.secrets["AIzaSyB6FwS-ydW95Nc9kWRAmzFCInegtLPVJBg"]
-API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent"
+API_KEY = st.secrets["GEMINI_API_KEY"]
+API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
 
 def ask_gemini(prompt):
     headers = {
@@ -23,4 +23,4 @@ def ask_gemini(prompt):
         result = response.json()
         return result["candidates"][0]["content"]["parts"][0]["text"]
     else:
-        return f"Gagal menjawab. Status code: {response.status_code}"
+        return f"❌ Gagal menjawab. Status code: {response.status_code}"

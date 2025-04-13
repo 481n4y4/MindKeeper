@@ -1,5 +1,5 @@
 import streamlit as st
-from firebase_config import db
+from firebase_config import get_data, set_data
 from gemini_chat import ask_gemini
 
 st.set_page_config(page_title="MindKeeper", layout="centered")
@@ -8,8 +8,8 @@ st.write("Kontrol perangkat fokus & bantuan AI")
 
 # === Ambil status dari Firebase terlebih dulu ===
 try:
-    focus_state = db.child("focus").get().val()
-    timer_state = db.child("timer").get().val()
+    focus_state = get_data("focus")
+    timer_state = get_data("timer")
 except Exception as e:
     st.error("Gagal baca dari Firebase")
     st.error(str(e))

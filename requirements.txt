@@ -1,4 +1,4 @@
 streamlit
-google-generativeai
-google-cloud-storage
-pyrebase4 @ git+https://github.com/nhorvath/Pyrebase4.git
+pyrebase
+google-auth
+setuptools>=65.0.0

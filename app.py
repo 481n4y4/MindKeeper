@@ -2,13 +2,6 @@ import streamlit as st
 from firebase_config import db
 from gemini_chat import ask_gemini
 
-# focus_data = db.child("focus").get()
-# if focus_data.val() is not None:
-#     st.write(f"Status Fokus: {focus_data.val()}")
-# else:
-#     st.warning("Belum ada data 'focus' di database.")
-
-
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper Dashboard")
 st.write("Kontrol perangkat fokus & bantuan AI")

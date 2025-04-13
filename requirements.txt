@@ -1,4 +1,3 @@
 streamlit
-pyrebase
-google-auth
-setuptools>=65.0.0
+google-generativeai
+requests

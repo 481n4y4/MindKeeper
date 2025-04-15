@@ -1,3 +1,4 @@
 streamlit
 requests
-pyrebase
+pyrebase4
+pycryptodome

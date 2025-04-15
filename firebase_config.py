@@ -13,6 +13,7 @@
 # firebase = pyrebase.initialize_app(firebase_config)
 # db = firebase.database()
 
+import pyrebase4 as pyrebase
 import requests
 import json
 

@@ -168,5 +168,3 @@ Gunakan sidebar di kiri untuk mengakses:
 - Status koneksi perangkat ESP32
 - Fokus session control (jika ada)
 """)
-
-st.image("https://i.imgur.com/X9Kj6kS.png", caption="Ilustrasi MindKeeper", use_column_width=True)

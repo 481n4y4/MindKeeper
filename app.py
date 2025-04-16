@@ -2,7 +2,6 @@ import streamlit as st
 from firebase_config import get_data, set_data
 from gemini_chat import ask_gemini
 import streamlit as st
-from esp_status import is_esp_connected
 
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper Dashboard")
@@ -141,31 +140,6 @@ if prompt := st.chat_input("Tanya ke MindKeeper..."):
         "answer": response
     })
 
-    st.title("MindKeeper: Kamera Live")
-st.markdown("### Live Kamera dari ESP32-CAM")
-
-# Ganti IP sesuai output Serial Monitor ESP32-CAM
-esp_ip = "http://192.168.67.99/stream"
-
-st.components.v1.html(f"""
-    <div style="text-align: center;">
-        <img src="{esp_ip}/stream" width="480" height="360" />
-    </div>
-""", height=400)
-
-connected = get_data("status/connected")
-if connected:
-    st.success("✅ ESP32 terhubung (via Firebase)")
-else:
-    st.warning("⚠️ ESP32 belum mengirim sinyal")
-
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper AI Dashboard")
-st.markdown("""
-Selamat datang di **MindKeeper**!
 
-Gunakan sidebar di kiri untuk mengakses:
-- Kamera live dari ESP32-CAM
-- Status koneksi perangkat ESP32
-- Fokus session control (jika ada)
-""")

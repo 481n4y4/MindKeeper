@@ -1,10 +1,12 @@
 import streamlit as st
 from firebase_config import get_data, set_data
 from gemini_chat import ask_gemini
+import streamlit as st
 
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper Dashboard")
 st.write("Kontrol perangkat fokus & bantuan AI")
+
 
 # === Ambil status dari Firebase terlebih dulu ===
 try:
@@ -137,3 +139,15 @@ if prompt := st.chat_input("Tanya ke MindKeeper..."):
         "question": prompt,
         "answer": response
     })
+
+    st.title("MindKeeper: Kamera Live")
+st.markdown("### Live Kamera dari ESP32-CAM")
+
+# Ganti IP sesuai output Serial Monitor ESP32-CAM
+esp_ip = "http://192.168.67.99"
+
+st.components.v1.html(f"""
+    <div style="text-align: center;">
+        <img src="{esp_ip}/stream" width="480" height="360" />
+    </div>
+""", height=400)

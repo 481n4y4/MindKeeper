@@ -153,10 +153,11 @@ st.components.v1.html(f"""
     </div>
 """, height=400)
 
-if is_esp_connected():
-    st.success("✅ ESP32 Terhubung ke laptop!")
+connected = get_data("status/connected")
+if connected:
+    st.success("✅ ESP32 terhubung (via Firebase)")
 else:
-    st.warning("⚠️ ESP32 belum terdeteksi.")
+    st.warning("⚠️ ESP32 belum mengirim sinyal")
 
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper AI Dashboard")

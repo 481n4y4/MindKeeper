@@ -145,7 +145,7 @@ if prompt := st.chat_input("Tanya ke MindKeeper..."):
 st.markdown("### Live Kamera dari ESP32-CAM")
 
 # Ganti IP sesuai output Serial Monitor ESP32-CAM
-esp_ip = "http://192.168.67.99"
+esp_ip = "http://192.168.67.99/stream"
 
 st.components.v1.html(f"""
     <div style="text-align: center;">

@@ -5,7 +5,7 @@ st.title("📷 Live Kamera ESP32-CAM")
 st.caption("Pastikan ESP32-CAM dan laptop terhubung ke WiFi yang sama.")
 
 # Ganti IP di bawah ini dengan IP ESP32-CAM milikmu
-esp32cam_ip = "http://192.168.1.100"
+esp32cam_ip = "http://192.168.67.99"
 
 st.markdown("### 🔴 Streaming Kamera")
 st.components.v1.html(f"""

@@ -94,7 +94,7 @@ with st.sidebar:
                             )
                         st.experimental_rerun()
     st.markdown("### 📷 Cam")
-        st.link_button("Go to Camera", "http://192.168.61.99")          
+    st.link_button("Go to Camera", "http://192.168.61.99")          
     
 
     st.markdown("---")

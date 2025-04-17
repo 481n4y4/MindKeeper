@@ -93,6 +93,9 @@ with st.sidebar:
                                 if st.session_state.chat_sessions else None
                             )
                         st.experimental_rerun()
+    st.markdown("### 📷 Cam")
+        st.link_button("Go to Camera", "http://192.168.61.99")          
+    
 
     st.markdown("---")
     st.caption("Klik nama untuk membuka. Gunakan ⋮ untuk opsi ganti nama / hapus.")

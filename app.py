@@ -140,6 +140,3 @@ if prompt := st.chat_input("Tanya ke MindKeeper..."):
         "answer": response
     })
 
-st.set_page_config(page_title="MindKeeper", layout="centered")
-st.title("🧠 MindKeeper AI Dashboard")
-

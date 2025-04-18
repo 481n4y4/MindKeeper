@@ -7,7 +7,7 @@ st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper Dashboard")
 st.write("Kontrol perangkat fokus & bantuan AI")
 
-# === Ambil status dari Firebase terlebih dulu ===
+# Ambil status dari Firebase
 try:
     focus_state = get_data("focus")
     timer_state = get_data("timer")
@@ -19,7 +19,7 @@ except Exception as e:
     focus_state = False
     timer_state = 0
 
-# === Fokus Timer === (dalam expandable)
+# =============== Fokus Timer Section ===================
 with st.expander("⏱️ Atur Sesi Fokus", expanded=True):
     duration = st.slider("Durasi Fokus (menit)", 5, 90, 25)
 
@@ -28,7 +28,7 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=True):
         db.child("focus").set(True)
         db.child("timer").set(duration * 60)
         st.success("Fokus dimulai!")
-        st.experimental_rerun()  # ← render ulang untuk update tampilan
+        st.experimental_rerun()
 
     if col2.button("Akhiri Fokus"):
         db.child("focus").set(False)
@@ -38,17 +38,16 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=True):
 
     st.info(f"Status Fokus: **{'AKTIF' if focus_state else 'NONAKTIF'}**")
 
-    # Placeholder untuk countdown
+    # Countdown timer yang tidak mengganggu elemen lain
     timer_placeholder = st.empty()
     notif_placeholder = st.empty()
 
     if focus_state and timer_state > 0:
         mins, secs = divmod(timer_state, 60)
         timer_placeholder.markdown(f"⏳ Timer tersisa: **{mins:02d}:{secs:02d}**", unsafe_allow_html=True)
+        # Update timer tanpa blocking loop
         time.sleep(1)
-        timer_state -= 1
-        db.child("timer").set(timer_state)
-        st.experimental_rerun()
+        db.child("timer").set(timer_state - 1)
     elif focus_state and timer_state <= 0:
         db.child("focus").set(False)
         db.child("timer").set(0)
@@ -57,18 +56,7 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=True):
         mins, secs = divmod(timer_state, 60)
         timer_placeholder.markdown(f"🕒 Timer tersisa: **{mins:02d}:{secs:02d}**", unsafe_allow_html=True)
 
-# === AI Assistant ===
-st.markdown("---")
-st.subheader("🤖 MindKeeper AI Chat")
-
-if "chat_sessions" not in st.session_state:
-    st.session_state.chat_sessions = {}
-if "current_chat_id" not in st.session_state:
-    st.session_state.current_chat_id = "Chat 1"
-if st.session_state.current_chat_id not in st.session_state.chat_sessions:
-    st.session_state.chat_sessions[st.session_state.current_chat_id] = []
-
-# Sidebar
+# =============== Sidebar: Kamera & Chat ===============
 with st.sidebar:
     st.markdown("## 📷 Kamera")
     st.link_button("Go to Camera", "http://192.168.1.23")  # Ganti sesuai alamat kamera
@@ -80,8 +68,7 @@ with st.sidebar:
         st.session_state.current_chat_id = new_id
 
     st.markdown("### 💬 Daftar Obrolan")
-    chat_ids = list(st.session_state.chat_sessions.keys())
-    for chat_id in chat_ids:
+    for chat_id in list(st.session_state.chat_sessions.keys()):
         is_active = chat_id == st.session_state.current_chat_id
         with st.container():
             cols = st.columns([6, 1])
@@ -112,7 +99,17 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Klik nama untuk membuka. Gunakan ⋮ untuk opsi ganti nama / hapus.")
 
-# Tampilan chat UI
+# =============== Chat UI ===============================
+st.markdown("---")
+st.subheader("🤖 MindKeeper AI Chat")
+
+if "chat_sessions" not in st.session_state:
+    st.session_state.chat_sessions = {}
+if "current_chat_id" not in st.session_state:
+    st.session_state.current_chat_id = "Chat 1"
+if st.session_state.current_chat_id not in st.session_state.chat_sessions:
+    st.session_state.chat_sessions[st.session_state.current_chat_id] = []
+
 chat_history = st.session_state.chat_sessions[st.session_state.current_chat_id]
 for msg in chat_history:
     with st.chat_message("user"):
@@ -120,7 +117,6 @@ for msg in chat_history:
     with st.chat_message("assistant"):
         st.markdown(msg["answer"])
 
-# Input pertanyaan
 if prompt := st.chat_input("Tanya ke MindKeeper..."):
     with st.chat_message("user"):
         st.markdown(prompt)

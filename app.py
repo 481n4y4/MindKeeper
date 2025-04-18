@@ -1,6 +1,7 @@
 import streamlit as st
 from firebase_config import get_data, set_data, db
 from gemini_chat import ask_gemini
+import time
 
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper Dashboard")
@@ -27,22 +28,40 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=False):
         if st.button("Mulai Fokus"):
             db.child("focus").set(True)
             db.child("timer").set(duration * 60)
-            st.success("Fokus dimulai!")
+            st.experimental_rerun()
 
     with col2:
         if st.button("Akhiri Fokus"):
             db.child("focus").set(False)
             db.child("timer").set(0)
-            st.warning("Fokus dihentikan.")
+            st.experimental_rerun()
 
     st.info(f"Status Fokus: **{'AKTIF' if focus_state else 'NONAKTIF'}**")
-    st.text(f"Timer tersisa: {timer_state} detik")
+
+    # Placeholder untuk countdown
+    timer_placeholder = st.empty()
+    notif_placeholder = st.empty()
+
+    # Countdown jika aktif
+    if focus_state and timer_state > 0:
+        while timer_state > 0:
+            mins, secs = divmod(timer_state, 60)
+            timer_placeholder.markdown(f"⏳ Timer tersisa: **{mins:02d}:{secs:02d}**", unsafe_allow_html=True)
+            time.sleep(1)
+            timer_state -= 1
+            db.child("timer").set(timer_state)
+
+        db.child("focus").set(False)
+        db.child("timer").set(0)
+        notif_placeholder.success("🎉 Sesi Fokus selesai!")
+    else:
+        mins, secs = divmod(timer_state, 60)
+        timer_placeholder.markdown(f"🕒 Timer tersisa: **{mins:02d}:{secs:02d}**", unsafe_allow_html=True)
 
 # === AI Assistant ===
 st.markdown("---")
 st.subheader("🤖 MindKeeper AI Chat")
 
-# Inisialisasi histori chat dan chat saat ini
 if "chat_sessions" not in st.session_state:
     st.session_state.chat_sessions = {}
 if "current_chat_id" not in st.session_state:
@@ -50,10 +69,10 @@ if "current_chat_id" not in st.session_state:
 if st.session_state.current_chat_id not in st.session_state.chat_sessions:
     st.session_state.chat_sessions[st.session_state.current_chat_id] = []
 
-# Sidebar: Cam + Obrolan
+# Sidebar
 with st.sidebar:
     st.markdown("## 📷 Kamera")
-    st.link_button("Go to Camera", "http://192.168.1.23")  # Ganti alamat sesuai kamera
+    st.link_button("Go to Camera", "http://192.168.1.23")
 
     st.markdown("## ✏️ Obrolan")
     if st.button("➕ Obrolan Baru"):
@@ -83,7 +102,6 @@ with st.sidebar:
                             if st.session_state.current_chat_id == chat_id:
                                 st.session_state.current_chat_id = new_name
                             st.rerun()
-
                     if st.button("🗑️ Hapus Chat", key=f"delete_{chat_id}"):
                         del st.session_state.chat_sessions[chat_id]
                         if st.session_state.current_chat_id == chat_id:
@@ -92,7 +110,6 @@ with st.sidebar:
                                 if st.session_state.chat_sessions else None
                             )
                         st.experimental_rerun()
-
     st.markdown("---")
     st.caption("Klik nama untuk membuka. Gunakan ⋮ untuk opsi ganti nama / hapus.")
 

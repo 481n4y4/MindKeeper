@@ -18,3 +18,9 @@ def get_data(path):
 
 def set_data(path, data):
     return db.child(path).set(data)
+
+def set_data(path, data):
+    return db.child(path).set(data)
+
+# Tambahkan ini:
+__all__ = ["get_data", "set_data", "db"]

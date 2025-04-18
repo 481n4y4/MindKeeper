@@ -1,12 +1,10 @@
 import streamlit as st
-from firebase_config import get_data, set_data
+from firebase_config import get_data, set_data, db
 from gemini_chat import ask_gemini
-import streamlit as st
 
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper Dashboard")
 st.write("Kontrol perangkat fokus & bantuan AI")
-
 
 # === Ambil status dari Firebase terlebih dulu ===
 try:
@@ -40,23 +38,22 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=False):
     st.info(f"Status Fokus: **{'AKTIF' if focus_state else 'NONAKTIF'}**")
     st.text(f"Timer tersisa: {timer_state} detik")
 
-
 # === AI Assistant ===
 st.markdown("---")
 st.subheader("🤖 MindKeeper AI Chat")
 
 # Inisialisasi histori chat dan chat saat ini
 if "chat_sessions" not in st.session_state:
-    st.session_state.chat_sessions = {}  # {id: list of messages}
+    st.session_state.chat_sessions = {}
 if "current_chat_id" not in st.session_state:
     st.session_state.current_chat_id = "Chat 1"
 if st.session_state.current_chat_id not in st.session_state.chat_sessions:
     st.session_state.chat_sessions[st.session_state.current_chat_id] = []
 
-# Sidebar: Riwayat & tombol buat chat baru + edit/hapus
+# Sidebar: Cam + Obrolan
 with st.sidebar:
     st.markdown("## 📷 Kamera")
-    st.link_button("Go to Camera", "http://192.168.1.23")
+    st.link_button("Go to Camera", "http://192.168.1.23")  # Ganti alamat sesuai kamera
 
     st.markdown("## ✏️ Obrolan")
     if st.button("➕ Obrolan Baru"):
@@ -77,7 +74,6 @@ with st.sidebar:
                 if st.button("⋮", key=f"menu_{chat_id}"):
                     st.session_state[f"menu_open_{chat_id}"] = not st.session_state.get(f"menu_open_{chat_id}", False)
 
-            # Dropdown opsional
             if st.session_state.get(f"menu_open_{chat_id}", False):
                 with st.container():
                     new_name = st.text_input("Ganti nama:", value=chat_id, key=f"input_{chat_id}")
@@ -96,12 +92,9 @@ with st.sidebar:
                                 if st.session_state.chat_sessions else None
                             )
                         st.experimental_rerun()
-             
-    
 
     st.markdown("---")
     st.caption("Klik nama untuk membuka. Gunakan ⋮ untuk opsi ganti nama / hapus.")
-
 
 # Tampilan chat UI
 chat_history = st.session_state.chat_sessions[st.session_state.current_chat_id]
@@ -122,26 +115,15 @@ if prompt := st.chat_input("Tanya ke MindKeeper..."):
     with st.chat_message("assistant"):
         st.markdown(response)
 
-    # Simpan ke histori aktif
     st.session_state.chat_sessions[st.session_state.current_chat_id].append({
         "question": prompt,
         "answer": response
     })
 
-    # Jika nama chat masih default (misal Chat 1, Chat 2, dst), update berdasarkan pertanyaan
     current_id = st.session_state.current_chat_id
     if current_id.startswith("Chat ") and len(st.session_state.chat_sessions[current_id]) == 1:
-        # Ambil max 5 kata dari prompt sebagai judul
         new_title = " ".join(prompt.strip().split()[:5])
         if new_title and new_title not in st.session_state.chat_sessions:
             st.session_state.chat_sessions[new_title] = st.session_state.chat_sessions.pop(current_id)
             st.session_state.current_chat_id = new_title
             st.rerun()
-
-
-    # Simpan ke histori aktif
-    st.session_state.chat_sessions[st.session_state.current_chat_id].append({
-        "question": prompt,
-        "answer": response
-    })
-

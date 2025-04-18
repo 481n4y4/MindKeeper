@@ -20,7 +20,7 @@ except Exception as e:
     timer_state = 0
 
 # === Fokus Timer === (dalam expandable)
-with st.expander("⏱️ Atur Sesi Fokus", expanded=False):
+with st.expander("⏱️ Atur Sesi Fokus", expanded=True):
     duration = st.slider("Durasi Fokus (menit)", 5, 90, 25)
 
     col1, col2 = st.columns(2)
@@ -28,13 +28,13 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=False):
         db.child("focus").set(True)
         db.child("timer").set(duration * 60)
         st.success("Fokus dimulai!")
-        st.stop()
+        st.experimental_rerun()  # ← render ulang untuk update tampilan
 
     if col2.button("Akhiri Fokus"):
         db.child("focus").set(False)
         db.child("timer").set(0)
         st.warning("Fokus dihentikan.")
-        st.stop()
+        st.experimental_rerun()
 
     st.info(f"Status Fokus: **{'AKTIF' if focus_state else 'NONAKTIF'}**")
 
@@ -43,13 +43,13 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=False):
     notif_placeholder = st.empty()
 
     if focus_state and timer_state > 0:
-        while timer_state > 0:
-            mins, secs = divmod(timer_state, 60)
-            timer_placeholder.markdown(f"⏳ Timer tersisa: **{mins:02d}:{secs:02d}**", unsafe_allow_html=True)
-            time.sleep(1)
-            timer_state -= 1
-            db.child("timer").set(timer_state)
-
+        mins, secs = divmod(timer_state, 60)
+        timer_placeholder.markdown(f"⏳ Timer tersisa: **{mins:02d}:{secs:02d}**", unsafe_allow_html=True)
+        time.sleep(1)
+        timer_state -= 1
+        db.child("timer").set(timer_state)
+        st.experimental_rerun()
+    elif focus_state and timer_state <= 0:
         db.child("focus").set(False)
         db.child("timer").set(0)
         notif_placeholder.success("🎉 Sesi Fokus selesai!")
@@ -71,7 +71,7 @@ if st.session_state.current_chat_id not in st.session_state.chat_sessions:
 # Sidebar
 with st.sidebar:
     st.markdown("## 📷 Kamera")
-    st.link_button("Go to Camera", "http://192.168.1.23")
+    st.link_button("Go to Camera", "http://192.168.1.23")  # Ganti sesuai alamat kamera
 
     st.markdown("## ✏️ Obrolan")
     if st.button("➕ Obrolan Baru"):

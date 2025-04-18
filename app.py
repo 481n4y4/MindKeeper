@@ -56,7 +56,7 @@ if st.session_state.current_chat_id not in st.session_state.chat_sessions:
 # Sidebar: Riwayat & tombol buat chat baru + edit/hapus
 with st.sidebar:
     st.markdown("## 📷 Kamera")
-    st.link_button("Go to Camera", "http://192.168.61.99")
+    st.link_button("Go to Camera", "http://192.168.1.23")
 
     st.markdown("## ✏️ Obrolan")
     if st.button("➕ Obrolan Baru"):

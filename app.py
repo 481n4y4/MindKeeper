@@ -24,17 +24,17 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=False):
     duration = st.slider("Durasi Fokus (menit)", 5, 90, 25)
 
     col1, col2 = st.columns(2)
-    with col1:
-        if st.button("Mulai Fokus"):
-            db.child("focus").set(True)
-            db.child("timer").set(duration * 60)
-            st.experimental_rerun()
+    if col1.button("Mulai Fokus"):
+        db.child("focus").set(True)
+        db.child("timer").set(duration * 60)
+        st.success("Fokus dimulai!")
+        st.stop()
 
-    with col2:
-        if st.button("Akhiri Fokus"):
-            db.child("focus").set(False)
-            db.child("timer").set(0)
-            st.experimental_rerun()
+    if col2.button("Akhiri Fokus"):
+        db.child("focus").set(False)
+        db.child("timer").set(0)
+        st.warning("Fokus dihentikan.")
+        st.stop()
 
     st.info(f"Status Fokus: **{'AKTIF' if focus_state else 'NONAKTIF'}**")
 
@@ -42,7 +42,6 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=False):
     timer_placeholder = st.empty()
     notif_placeholder = st.empty()
 
-    # Countdown jika aktif
     if focus_state and timer_state > 0:
         while timer_state > 0:
             mins, secs = divmod(timer_state, 60)

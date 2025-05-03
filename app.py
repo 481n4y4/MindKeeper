@@ -3,7 +3,7 @@ from firebase_config import get_data, set_data, db
 from gemini_chat import ask_gemini
 import time
 
-# 🔧 Inisialisasi session_state SEBELUM digunakan
+# 🔧 INISIALISASI session_state SEBELUM DIGUNAKAN
 if "chat_sessions" not in st.session_state:
     st.session_state.chat_sessions = {}
 if "current_chat_id" not in st.session_state:
@@ -53,7 +53,6 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=True):
     if focus_state and timer_state > 0:
         mins, secs = divmod(timer_state, 60)
         timer_placeholder.markdown(f"⏳ Timer tersisa: **{mins:02d}:{secs:02d}**", unsafe_allow_html=True)
-        # Update timer tanpa blocking loop
         time.sleep(1)
         db.child("timer").set(timer_state - 1)
     elif focus_state and timer_state <= 0:
@@ -85,6 +84,7 @@ with st.sidebar:
                     st.session_state.current_chat_id = chat_id
             with cols[1]:
                 if st.button("⋮", key=f"menu_{chat_id}"):
+
                     st.session_state[f"menu_open_{chat_id}"] = not st.session_state.get(f"menu_open_{chat_id}", False)
 
             if st.session_state.get(f"menu_open_{chat_id}", False):
@@ -110,13 +110,6 @@ with st.sidebar:
 # =============== Chat UI ===============================
 st.markdown("---")
 st.subheader("🤖 MindKeeper AI Chat")
-
-if "chat_sessions" not in st.session_state:
-    st.session_state.chat_sessions = {}
-if "current_chat_id" not in st.session_state:
-    st.session_state.current_chat_id = "Chat 1"
-if st.session_state.current_chat_id not in st.session_state.chat_sessions:
-    st.session_state.chat_sessions[st.session_state.current_chat_id] = []
 
 chat_history = st.session_state.chat_sessions[st.session_state.current_chat_id]
 for msg in chat_history:

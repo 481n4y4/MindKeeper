@@ -36,13 +36,13 @@ with st.expander("⏱️ Atur Sesi Fokus", expanded=True):
         db.child("focus").set(True)
         db.child("timer").set(duration * 60)
         st.success("Fokus dimulai!")
-        st.experimental_rerun()
+        st.rerun()
 
     if col2.button("Akhiri Fokus"):
         db.child("focus").set(False)
         db.child("timer").set(0)
         st.warning("Fokus dihentikan.")
-        st.experimental_rerun()
+        st.rerun()
 
     st.info(f"Status Fokus: **{'AKTIF' if focus_state else 'NONAKTIF'}**")
 

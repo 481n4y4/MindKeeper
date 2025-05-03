@@ -3,6 +3,14 @@ from firebase_config import get_data, set_data, db
 from gemini_chat import ask_gemini
 import time
 
+# 🔧 Inisialisasi session_state SEBELUM digunakan
+if "chat_sessions" not in st.session_state:
+    st.session_state.chat_sessions = {}
+if "current_chat_id" not in st.session_state:
+    st.session_state.current_chat_id = "Chat 1"
+if st.session_state.current_chat_id not in st.session_state.chat_sessions:
+    st.session_state.chat_sessions[st.session_state.current_chat_id] = []
+
 st.set_page_config(page_title="MindKeeper", layout="centered")
 st.title("🧠 MindKeeper Dashboard")
 st.write("Kontrol perangkat fokus & bantuan AI")
